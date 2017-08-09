@@ -1,6 +1,10 @@
 @charset 'utf8'
-
+$datepicker-width : 300px;
+$calendar-width : 300px;
+$day-width : ($calendar-width - 40px)
 @import '../styles/colors.sass'
+
+
 
 =unselectable
   -webkit-touch-callout: none
@@ -10,7 +14,7 @@
   user-select: none
 
 .ng-daterangepicker
-  width: 300px
+  width: $datepicker-width
   height: 50px
   background: $white
   display: inline-block
@@ -391,3 +395,21 @@
             border-color: $gray
             &:hover, &.is-active
               background: $gray
+  &.theme-presetNone
+    .calendar
+      width : $calendar-width
+      .calendar-container
+        width: $calendar-width
+        .day-names
+          width : $day-width
+          .day-name
+            width : ($day-width / 7)
+        .days
+          width : $day-width
+          display: inline-block
+          .day
+            width: ($day-width / 7)
+            .day-num
+              width : ($day-width / 7)
+      .side-container
+        display : none  

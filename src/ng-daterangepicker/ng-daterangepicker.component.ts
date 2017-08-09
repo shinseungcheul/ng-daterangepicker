@@ -3,10 +3,10 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import * as dateFns from 'date-fns';
 
 export interface NgDateRangePickerOptions {
-  theme: 'default' | 'green' | 'teal' | 'cyan' | 'grape' | 'red' | 'gray';
+  theme: 'default' | 'green' | 'teal' | 'cyan' | 'grape' | 'red' | 'gray' | 'presetNone';
   range: 'tm' | 'lm' | 'lw' | 'tw' | 'ty' | 'ly';
   dayNames: string[];
-  presetNames: string[];
+  presetNames?: string[];
   dateFormat: string;
   outputFormat: string;
   startOfWeek: number;
@@ -52,7 +52,7 @@ export class NgDateRangePickerComponent implements ControlValueAccessor, OnInit,
     theme: 'default',
     range: 'tm',
     dayNames: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    presetNames: ['This Month', 'Last Month', 'This Week', 'Last Week', 'This Year', 'Last Year', 'Start', 'End'],
+    // presetNames: ['This Month', 'Last Month', 'This Week', 'Last Week', 'This Year', 'Last Year', 'Start', 'End'],
     dateFormat: 'yMd',
     outputFormat: 'DD/MM/YYYY',
     startOfWeek: 0
@@ -161,16 +161,23 @@ export class NgDateRangePickerComponent implements ControlValueAccessor, OnInit,
   selectDate(e: MouseEvent, index: number): void {
     e.preventDefault();
     let selectedDate: Date = this.days[index].date;
-    if ((this.opened === 'from' && dateFns.isAfter(selectedDate, this.dateTo)) ||
-      (this.opened === 'to' && dateFns.isBefore(selectedDate, this.dateFrom))) {
-      return;
-    }
+
 
     if (this.opened === 'from') {
       this.dateFrom = selectedDate;
+      if(dateFns.isAfter(this.dateFrom,this.dateTo) ){
+        this.dateTo = dateFns.addDays(this.dateFrom,1);
+      }
       this.opened = 'to';
     } else if (this.opened === 'to') {
       this.dateTo = selectedDate;
+      if(dateFns.isBefore(this.dateTo,this.dateFrom) ){
+        this.dateFrom = dateFns.subDays(this.dateTo,1);
+      }else{
+        setTimeout(()=>{
+          this.opened = false
+        }, 500)
+      }
       this.opened = 'from';
     }
 
